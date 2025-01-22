@@ -33,12 +33,9 @@ const AppLayout = () => {
   //   }, []);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" style={{ minHeight: "100vh" }}>
       <Header />
-      <SidebarProvider
-        className="flex-1 overflow-hidden lg:p-2"
-        defaultOpen={false}
-      >
+      <SidebarProvider defaultOpen={false} className="flex-1">
         <AppSidebar />
         <div className="flex-1 p-2 flex flex-col gap-2">
           <Topbar />
