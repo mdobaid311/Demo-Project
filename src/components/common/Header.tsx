@@ -4,8 +4,17 @@ import user from "../../assets/user.png";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
+import { clearUserDetailsLocalStorage } from "@/utils/authUtils";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
+
+  const logoutHandler = () => {
+    clearUserDetailsLocalStorage();
+    navigate("/auth/login");
+  };
+
   return (
     <Card className="m-2">
       <CardContent className="p-2">
@@ -30,7 +39,7 @@ const Header = () => {
               </div>
             </div>
             <div className="flex items-center gap-8">
-              <Button variant="destructive">
+              <Button variant="destructive" onClick={logoutHandler}>
                 <IoMdLogOut />
               </Button>
             </div>

@@ -2,18 +2,18 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface userState {
   email: string;
-  userName: string;
   userType: string;
   userID: string;
-  clientID: string;
+  firstname: string;
+  lastname: string;
 }
 
 const initialState: userState = {
   email: "",
-  userName: "",
   userType: "",
   userID: "",
-  clientID: "",
+  firstname: "",
+  lastname: "",
 };
 
 export const userSlice = createSlice({
@@ -26,27 +26,29 @@ export const userSlice = createSlice({
         email: string;
         userType: string;
         userID: string;
-        clientID: string;
-        userName: string;
+        firstname: string;
+        lastname: string;
       }>
     ) => {
-      const { email, userType, userID, clientID, userName } = action.payload;
+      const { email, userType, userID, firstname, lastname } = action.payload;
       state.email = email;
       state.userType = userType;
       state.userID = userID;
-      state.clientID = clientID;
-      state.userName = userName;
-      localStorage.setItem("userName", userName);
+      state.firstname = firstname;
+      state.lastname = lastname;
+      localStorage.setItem("email", email);
       localStorage.setItem("userType", userType);
       localStorage.setItem("userID", userID);
-      localStorage.setItem("clientID", clientID);
+      localStorage.setItem("firstname", firstname);
+      localStorage.setItem("lastname", lastname);
     },
     logout: () => {
       localStorage.setItem("userType", "");
-      localStorage.setItem("userName", "");
+      localStorage.setItem("email", "");
       localStorage.setItem("userID", "");
-      localStorage.setItem("clientID", "");
-      localStorage.setItem("access_token", "");
+      localStorage.setItem("firstname", "");
+      localStorage.setItem("lastname", "");
+      localStorage.setItem("token", "");
       localStorage.setItem("refresh_token", "");
     },
   },

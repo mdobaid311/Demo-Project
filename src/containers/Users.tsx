@@ -1,5 +1,7 @@
+import usersAPI from "@/api/userAPI";
 import { CustomAlertDialog } from "@/components/common/CustomAlertDialog";
 import { DeleteIcon, EditIcon } from "@/components/common/icons";
+import Loader from "@/components/common/Loader";
 import { DataTable } from "@/components/generic-components/DataTable";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,36 +12,41 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import UserAddEditForm from "@/components/users-components/UserAddEditForm";
+import { userFormSchema } from "@/constants/schemas/formSchemas";
 import { IUser } from "@/interfaces/IUser";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
+import { z } from "zod";
 
 const Users = () => {
   const [isUserAddSlideoutOpen, setIsUserAddSlideoutOpen] = useState(false);
-  const [isEditing] = useState(false);
-  const [isFetching, setIsFetching] = useState(false);
-  const [users, setUsers] = useState([
-    {
-      UserID: 1,
-      FirstName: "John",
-      LastName: "Doe",
-      PhoneNumber: "1234567890",
-      Email: "john@gmail.com",
-    },
-    {
-      UserID: 2,
-      FirstName: "Jane",
-      LastName: "Doe",
-      PhoneNumber: "1234567890",
-      Email: "test@test.com",
-    },
-  ]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [editingUserData, setEditingUserData] = useState<IUser>();
+
+  const getUsers = async () => {
+    setIsFetching(true);
+    try {
+      usersAPI.getAllUsers().then((res) => {
+        setUsers(res.data);
+        setIsFetching(false);
+      });
+    } catch (error) {
+      console.error(error);
+      setIsFetching(false);
+    }
+  };
+
+  useEffect(() => {
+    getUsers();
+  }, []);
 
   const userColumns: ColumnDef<IUser>[] = [
     {
-      accessorKey: "FirstName",
+      accessorKey: "firstName",
       header: ({ column }: any) => (
         <Button
           variant="ghost"
@@ -50,31 +57,40 @@ const Users = () => {
           <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }: any) => <div>{row.getValue("FirstName")}</div>,
+      cell: ({ row }: any) => <div>{row.getValue("firstName")}</div>,
     },
     {
-      accessorKey: "LastName",
+      accessorKey: "lastName",
       header: "Last Name",
-      cell: ({ row }: any) => <div>{row.getValue("LastName")}</div>,
+      cell: ({ row }: any) => <div>{row.getValue("lastName")}</div>,
     },
     {
-      accessorKey: "PhoneNumber",
+      accessorKey: "phoneNumber",
       header: "Phone Number",
       cell: ({ row }: any) => (
-        <div className="">{row.getValue("PhoneNumber")}</div>
+        <div className="">{row.getValue("phoneNumber")}</div>
       ),
     },
     {
-      accessorKey: "Email",
+      accessorKey: "email",
       header: "Email",
-      cell: ({ row }: any) => <div>{row.getValue("Email")}</div>,
+      cell: ({ row }: any) => <div>{row.getValue("email")}</div>,
     },
     {
-      id: "UserID",
+      id: "userId",
       header: "Actions",
       cell: ({ row }: any) => {
-        const handleDelete = () => {};
-        const handleEdit = () => {};
+        const handleDelete = () => {
+          console.log(row);
+          usersAPI.deleteUser(row.original.userId).then(() => {
+            getUsers();
+          });
+        };
+        const handleEdit = () => {
+          setIsUserAddSlideoutOpen(true);
+          setIsEditing(true);
+          setEditingUserData(row.original);
+        };
         return (
           <div className="flex space-x-2">
             <Button variant="outline" size="sm" onClick={handleEdit}>
@@ -97,12 +113,34 @@ const Users = () => {
     },
   ];
 
-  const handleUserAdd = () => {
-    console.log("add");
+  const handleUserAdd = (values: z.infer<typeof userFormSchema>) => {
+    console.log("add", values);
+    const body = {
+      firstName: values.FirstName,
+      lastName: values.LastName,
+      email: values.Email,
+      phoneNumber: values.PhoneNumber,
+      password: values.Password,
+    };
+    usersAPI.createUser(body).then(() => {
+      getUsers();
+      setIsUserAddSlideoutOpen(false);
+    });
   };
 
-  const handleUserEdit = () => {
-    console.log("edit");
+  const handleUserEdit = (values: z.infer<typeof userFormSchema>) => {
+    console.log("edit", values);
+    const body = {
+      userId: editingUserData?.userId,
+      firstName: values.FirstName,
+      lastName: values.LastName,
+      email: values.Email,
+      phoneNumber: values.PhoneNumber,
+    };
+    usersAPI.updateUser(body).then(() => {
+      getUsers();
+      setIsUserAddSlideoutOpen(false);
+    });
   };
 
   return (
@@ -124,10 +162,10 @@ const Users = () => {
       <CardContent>
         <div className="max-w-full">
           {isFetching ? (
-            "Fetching"
+            <Loader />
           ) : (
             <DataTable
-              data={users ? [...users] : []}
+              data={users}
               columns={userColumns}
               filterPlaceholder="Search user..."
               showPagination={true}
@@ -140,13 +178,15 @@ const Users = () => {
           onClose={() => setIsUserAddSlideoutOpen(false)}
           isUserAddSlideoutOpen={isUserAddSlideoutOpen}
           isSubmitting={false}
-          onSuccess={() => {
+          onSuccess={(values: z.infer<typeof userFormSchema>) => {
             if (isEditing) {
-              handleUserEdit();
+              handleUserEdit(values);
             } else {
-              handleUserAdd();
+              handleUserAdd(values);
             }
           }}
+          editingUserData={editingUserData}
+          isEditing={isEditing}
         />
       )}
     </Card>

@@ -2,31 +2,31 @@ import { useForm } from "react-hook-form";
 import Slideout from "../generic-components/Slideout";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { userFormSchema } from "@/constants/schemas/formSchemas";
+import { employeeFormSchema } from "@/constants/schemas/formSchemas";
 import FormInputField from "../generic-components/FormInputField";
 import { Form } from "../ui/form";
 import { useEffect } from "react";
-import { IUser } from "@/interfaces/IUser";
+import { IEmployee } from "@/interfaces/IEmployee";
 
-interface IUserFormProps {
+interface IEmployeeFormProps {
   onClose: () => void;
-  onSuccess: (values: z.infer<typeof userFormSchema>) => void;
+  onSuccess: (values: z.infer<typeof employeeFormSchema>) => void;
   isEditing?: boolean;
-  isUserAddSlideoutOpen: boolean;
+  isEmployeeAddSlideoutOpen: boolean;
   isSubmitting: boolean;
-  editingUserData?: IUser;
+  editingEmployeeData?: IEmployee;
 }
 
-const UserAddEditForm = ({
+const EmployeeAddEditForm = ({
   onClose,
   onSuccess,
   isEditing,
-  isUserAddSlideoutOpen,
+  isEmployeeAddSlideoutOpen,
   isSubmitting,
-  editingUserData,
-}: IUserFormProps) => {
-  const form = useForm<z.infer<typeof userFormSchema>>({
-    resolver: zodResolver(userFormSchema),
+  editingEmployeeData,
+}: IEmployeeFormProps) => {
+  const form = useForm<z.infer<typeof employeeFormSchema>>({
+    resolver: zodResolver(employeeFormSchema),
   });
 
   const submitFormHandler = form.handleSubmit((values) => {
@@ -35,19 +35,18 @@ const UserAddEditForm = ({
 
   useEffect(() => {
     if (isEditing) {
-      form.setValue("FirstName", editingUserData?.firstName || "");
-      form.setValue("LastName", editingUserData?.lastName || "");
-      form.setValue("Email", editingUserData?.email || "");
-      form.setValue("PhoneNumber", editingUserData?.phoneNumber || "");
-      form.setValue("Password", "Password");
+      form.setValue("FirstName", editingEmployeeData?.firstName || "");
+      form.setValue("LastName", editingEmployeeData?.lastName || "");
+      form.setValue("Email", editingEmployeeData?.email || "");
+      form.setValue("PhoneNumber", editingEmployeeData?.phoneNumber || "");
     }
-  }, [editingUserData, form, isEditing]);
+  }, [editingEmployeeData, form, isEditing]);
 
   return (
     <Slideout
-      isOpen={isUserAddSlideoutOpen}
+      isOpen={isEmployeeAddSlideoutOpen}
       onClose={() => onClose()}
-      title={isEditing ? "Edit User" : "Add User"}
+      title={isEditing ? "Edit Employee" : "Add Employee"}
       isSubmitting={isSubmitting}
       onSubmit={submitFormHandler}
     >
@@ -81,19 +80,10 @@ const UserAddEditForm = ({
             placeholder="Enter Phone Number"
             required
           />
-          {!isEditing && (
-            <FormInputField
-              form={form}
-              name="Password"
-              label="Password"
-              placeholder="Enter password"
-              required
-            />
-          )}
         </form>
       </Form>
     </Slideout>
   );
 };
 
-export default UserAddEditForm;
+export default EmployeeAddEditForm;

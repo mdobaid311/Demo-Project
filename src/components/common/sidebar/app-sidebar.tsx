@@ -9,7 +9,7 @@ import { sidebarlinks } from "@/constants/sidebarLinks";
 import { AudioWaveform, Command, GalleryVerticalEnd } from "lucide-react";
 import * as React from "react";
 import { NavMain } from "./nav-main";
-
+import logo from "@/assets/logo.png";
 const data = {
   teams: [
     {
@@ -38,15 +38,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar collapsible="icon" {...props} variant="floating">
       <SidebarHeader>
         {/* <TeamSwitcher teams={data.teams} /> */}
-        <div className="flex items-center justify-center pt-8 pb-6">
-          {/* {state !== "collapsed" ? (
-            <img src={logo} alt="Freightquip Logo" />
+        <div>
+          {state !== "collapsed" ? (
+            <img src={logo} alt="Demo App Logo" />
           ) : (
-            <img src={logo} alt="Freightquip Logo" width={40} height={40} />
-          )} */}
-          {state !== "collapsed" && (
-            <h1 className="text-2xl uppercase">Demo App</h1>
-          )}{" "}
+            <img src={logo} alt="Demo App Logo" width={40} height={40} />
+          )}
         </div>
       </SidebarHeader>
       <SidebarContent>

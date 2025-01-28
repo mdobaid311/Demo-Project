@@ -1,5 +1,5 @@
-export type IUser = {
-  userId?: string | number;
+export type IEmployee = {
+  employeeId?: string | number;
   firstName: string;
   lastName: string;
   email: string;

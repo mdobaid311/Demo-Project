@@ -42,12 +42,12 @@ export function NavUser() {
                 <Avatar className="w-8 h-8">
                   <AvatarImage src="" />
                   <AvatarFallback className="bg-[--fq-dark-blue] border-[1px] border-ring">
-                    {userData?.userName.slice(0, 1).toUpperCase()}
+                    {userData?.email.slice(0, 1).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {userData.userName}
+                    {userData.email}
                   </span>
                   <span className="truncate text-xs">{userData.email}</span>
                 </div>
@@ -65,12 +65,12 @@ export function NavUser() {
                   <Avatar>
                     <AvatarImage src="" />
                     <AvatarFallback>
-                      {userData.userName.slice(0, 1).toUpperCase()}
+                      {userData.email.slice(0, 1).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">
-                      {userData.userName}
+                      {userData.email}
                     </span>
                     <span className="truncate text-xs">{userData.email}</span>
                   </div>
