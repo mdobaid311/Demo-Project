@@ -4,16 +4,14 @@ export interface userState {
   email: string;
   userType: string;
   userID: string;
-  firstname: string;
-  lastname: string;
+  name: string;
 }
 
 const initialState: userState = {
   email: "",
   userType: "",
   userID: "",
-  firstname: "",
-  lastname: "",
+  name: "",
 };
 
 export const userSlice = createSlice({
@@ -26,28 +24,24 @@ export const userSlice = createSlice({
         email: string;
         userType: string;
         userID: string;
-        firstname: string;
-        lastname: string;
+        name: string;
       }>
     ) => {
-      const { email, userType, userID, firstname, lastname } = action.payload;
+      const { email, userType, userID, name } = action.payload;
       state.email = email;
       state.userType = userType;
       state.userID = userID;
-      state.firstname = firstname;
-      state.lastname = lastname;
+      state.name = name;
       localStorage.setItem("email", email);
       localStorage.setItem("userType", userType);
       localStorage.setItem("userID", userID);
-      localStorage.setItem("firstname", firstname);
-      localStorage.setItem("lastname", lastname);
+      localStorage.setItem("name", name);
     },
     logout: () => {
       localStorage.setItem("userType", "");
       localStorage.setItem("email", "");
       localStorage.setItem("userID", "");
-      localStorage.setItem("firstname", "");
-      localStorage.setItem("lastname", "");
+      localStorage.setItem("name", "");
       localStorage.setItem("token", "");
       localStorage.setItem("refresh_token", "");
     },

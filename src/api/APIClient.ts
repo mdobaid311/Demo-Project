@@ -3,8 +3,7 @@ import { clearUserDetailsLocalStorage } from "@/utils/authUtils";
 import axios from "axios";
 import queryString from "query-string";
 
-const baseUrl =
-  "https://localhost:44310/api";
+const baseUrl = "https://localhost:44310/api";
 const getToken = () => localStorage.getItem("token");
 
 const axiosClient = axios.create({
@@ -33,14 +32,12 @@ axiosClient.interceptors.request.use(async (config: any) => {
     getToken() === "undefined"
   ) {
     clearUserDetailsLocalStorage();
-    const pathname = window.location.pathname;
-    window.location.href = "/auth/login?redirect=" + pathname;
   }
   return {
     ...config,
     headers: {
       "Content-Type": "application/json",
-      accessToken: `${getToken()}`,
+      Authorization: `Bearer ${getToken()}`,
     },
   };
 });
@@ -61,6 +58,10 @@ axiosClient.interceptors.response.use(
     return response;
   },
   (err) => {
+    if (err.response.status === 401) {
+      clearUserDetailsLocalStorage();
+      window.location.reload();
+    }
     if (!err.response) {
       return alert(err);
     }

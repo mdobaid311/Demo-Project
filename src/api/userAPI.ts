@@ -1,11 +1,13 @@
 import axiosClient from "./APIClient";
 
 const usersAPI = {
-  getAllUsers: () => axiosClient.get("/User/users"),
-  getUserByID: (id: string) => axiosClient.get(`/User/users/${id}`),
-  createUser: (data: any) => axiosClient.post("/Auth/register", data),
-  updateUser: (data: any) => axiosClient.put(`/User/users`, data),
-  deleteUser: (id: string) => axiosClient.delete(`/User/users/${id}`),
+  getAllUsers: async () => await axiosClient.get("/users"),
+  getUserByID: async (id: string) => await axiosClient.get(`/users/${id}`),
+  createUser: async (data: any) =>
+    await axiosClient.post("/Auth/register", data),
+  updateUser: async (data: any) => await axiosClient.put(`/users`, data),
+  deleteUser: async (id: string) =>
+    await axiosClient.delete(`/users/${id}`),
 };
 
 export default usersAPI;

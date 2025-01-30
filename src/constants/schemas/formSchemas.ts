@@ -56,6 +56,9 @@ export const userFormSchema = z
     PhoneNumber: z.string().min(1, {
       message: "Please enter a valid phone number",
     }),
+    Role: z.string().min(1, {
+      message: "Please select a role",
+    }),
     Password: z.string().min(1, {
       message: "Please enter a valid password",
     }),
@@ -65,6 +68,7 @@ export const userFormSchema = z
     LastName: true,
     Email: true,
     PhoneNumber: true,
+    Role: true,
     Password: true,
   });
 

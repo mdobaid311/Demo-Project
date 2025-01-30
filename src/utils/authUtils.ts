@@ -29,7 +29,6 @@ const authUtils = {
 
 export const clearUserDetailsLocalStorage = () => {
   localStorage.setItem("userType", "");
-  localStorage.setItem("email", "");
   localStorage.setItem("userID", "");
   localStorage.setItem("token", "");
   localStorage.setItem("refresh_token", "");

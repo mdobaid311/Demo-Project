@@ -19,8 +19,7 @@ const AppLayout = () => {
     const userID = localStorage.getItem("userID");
     const email = localStorage.getItem("email");
     const accessToken = localStorage.getItem("token");
-    const firstName = localStorage.getItem("firstname");
-    const lastName = localStorage.getItem("lastname");
+    const name = localStorage.getItem("name");
 
     if (!email || !userType || !userID || !accessToken) {
       navigate("/auth/login?redirect=" + pathname);
@@ -28,8 +27,7 @@ const AppLayout = () => {
     }
     dispatch(
       login({
-        firstname: firstName || "",
-        lastname: lastName || "",
+        name: name || "",
         email: email || "",
         userType: userType || "",
         userID: userID || "",

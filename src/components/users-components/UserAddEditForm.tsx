@@ -78,7 +78,14 @@ const UserAddEditForm = ({
             form={form}
             name="PhoneNumber"
             label="Phone Number"
-            placeholder="Enter Phone Number"
+            placeholder="Enter phone number"
+            required
+          />
+          <FormInputField
+            form={form}
+            name="Role"
+            label="Role"
+            placeholder="Enter role"
             required
           />
           {!isEditing && (

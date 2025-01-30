@@ -60,7 +60,6 @@ const Login = () => {
     setLoading(true);
     try {
       const response = await authAPI.login(values.Email, values.Password);
-      console.log(response);
       if (response?.status === 200) {
         localStorage.setItem("token", response?.data?.token);
 
@@ -75,11 +74,10 @@ const Login = () => {
         }
         dispatch(
           login({
-            firstname: response?.data?.firstName,
-            lastname: response?.data?.lastName,
+            name: response?.data?.name,
             email: response?.data?.email,
-            userType: "admin",
-            userID: response?.data?.id,
+            userType: response?.data?.roleName,
+            userID: response?.data?.userId,
           })
         );
 

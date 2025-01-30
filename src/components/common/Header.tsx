@@ -6,9 +6,12 @@ import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { clearUserDetailsLocalStorage } from "@/utils/authUtils";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { IRootState } from "@/store/store";
 
 const Header = () => {
   const navigate = useNavigate();
+  const userData = useSelector((state: IRootState) => state.user);
 
   const logoutHandler = () => {
     clearUserDetailsLocalStorage();
@@ -16,7 +19,7 @@ const Header = () => {
   };
 
   return (
-    <Card className="m-2">
+    <Card className="m-2 mb-0">
       <CardContent className="p-2">
         <div className="flex items-center justify-between">
           <div className="h-10 flex items-center gap-4">
@@ -34,8 +37,10 @@ const Header = () => {
                 <AvatarFallback>MO</AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
-                <h3 className="font-semibold">Mohammed Obaid</h3>
-                <p className="text-xs">Admin</p>
+                <h3 className="font-semibold">
+                  {userData?.name || "Demo User"}
+                </h3>
+                <p className="text-xs">{userData?.userType}</p>
               </div>
             </div>
             <div className="flex items-center gap-8">

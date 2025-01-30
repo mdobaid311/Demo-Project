@@ -14,10 +14,12 @@ import {
 import UserAddEditForm from "@/components/users-components/UserAddEditForm";
 import { userFormSchema } from "@/constants/schemas/formSchemas";
 import { IUser } from "@/interfaces/IUser";
+import { IRootState } from "@/store/store";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import { z } from "zod";
 
 const Users = () => {
@@ -26,6 +28,8 @@ const Users = () => {
   const [isFetching, setIsFetching] = useState(true);
   const [users, setUsers] = useState<IUser[]>([]);
   const [editingUserData, setEditingUserData] = useState<IUser>();
+
+  const userData = useSelector((state: IRootState) => state.user);
 
   const getUsers = async () => {
     setIsFetching(true);
@@ -76,41 +80,45 @@ const Users = () => {
       header: "Email",
       cell: ({ row }: any) => <div>{row.getValue("email")}</div>,
     },
-    {
-      id: "userId",
-      header: "Actions",
-      cell: ({ row }: any) => {
-        const handleDelete = () => {
-          console.log(row);
-          usersAPI.deleteUser(row.original.userId).then(() => {
-            getUsers();
-          });
-        };
-        const handleEdit = () => {
-          setIsUserAddSlideoutOpen(true);
-          setIsEditing(true);
-          setEditingUserData(row.original);
-        };
-        return (
-          <div className="flex space-x-2">
-            <Button variant="outline" size="sm" onClick={handleEdit}>
-              <EditIcon />
-            </Button>
-            <CustomAlertDialog
-              actionText="Delete"
-              cancelText="Cancel"
-              description="Are you sure you want to delete this user?"
-              onAction={handleDelete}
-              title="Delete User"
-            >
-              <Button variant="destructive" size="sm">
-                <DeleteIcon />
-              </Button>
-            </CustomAlertDialog>
-          </div>
-        );
-      },
-    },
+    ...(userData?.userType === "Admin"
+      ? [
+          {
+            id: "userId",
+            header: "Actions",
+            cell: ({ row }: any) => {
+              const handleDelete = () => {
+                console.log(row);
+                usersAPI.deleteUser(row.original.userId).then(() => {
+                  getUsers();
+                });
+              };
+              const handleEdit = () => {
+                setIsUserAddSlideoutOpen(true);
+                setIsEditing(true);
+                setEditingUserData(row.original);
+              };
+              return (
+                <div className="flex space-x-2">
+                  <Button variant="outline" size="sm" onClick={handleEdit}>
+                    <EditIcon />
+                  </Button>
+                  <CustomAlertDialog
+                    actionText="Delete"
+                    cancelText="Cancel"
+                    description="Are you sure you want to delete this user?"
+                    onAction={handleDelete}
+                    title="Delete User"
+                  >
+                    <Button variant="destructive" size="sm">
+                      <DeleteIcon />
+                    </Button>
+                  </CustomAlertDialog>
+                </div>
+              );
+            },
+          },
+        ]
+      : []),
   ];
 
   const handleUserAdd = (values: z.infer<typeof userFormSchema>) => {
@@ -121,6 +129,7 @@ const Users = () => {
       email: values.Email,
       phoneNumber: values.PhoneNumber,
       password: values.Password,
+      roleID: values.Role,
     };
     usersAPI.createUser(body).then(() => {
       getUsers();
@@ -136,6 +145,7 @@ const Users = () => {
       lastName: values.LastName,
       email: values.Email,
       phoneNumber: values.PhoneNumber,
+      roleID: values.Role,
     };
     usersAPI.updateUser(body).then(() => {
       getUsers();
@@ -148,14 +158,16 @@ const Users = () => {
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <h1 className="text-3xl text-primary">Users</h1>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="default"
-              onClick={() => setIsUserAddSlideoutOpen(true)}
-            >
-              Add User <FaPlus />
-            </Button>
-          </div>
+          {userData?.userType === "Admin" && (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="default"
+                onClick={() => setIsUserAddSlideoutOpen(true)}
+              >
+                Add User <FaPlus />
+              </Button>
+            </div>
+          )}
         </CardTitle>
         <CardDescription>Manage your users</CardDescription>
       </CardHeader>
